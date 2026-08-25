@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # A cold build of ~23k lines on a free runner; Mathlib itself comes from cache.
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Installs the toolchain pinned in `lean-toolchain`, resolves the Lake
+      # dependencies, and runs `lake exe cache get` so Mathlib is not rebuilt.
+      # `build: false` because the build is run explicitly below, where its
+      # output can be inspected.
+      - name: Set up Lean and fetch the Mathlib cache
+        uses: leanprover/lean-action@v1
+        with:
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+          use-mathlib-cache: true
+
+      # This build is *cold*, which is the point.  Mathlib's linters only run
+      # when a module is elaborated, so a warm `.lake` reports nothing however
+      # broken the style is; CI is the only place the style checks really run.
+      - name: Build
+        run: |
+          set -o pipefail
+          lake build 2>&1 | tee build.log
+
+      # The project is warning-free apart from the deliberate `sorry` holes in
+      # Challenge.lean, which are required by the Comparator convention.
+      # Anything else is a regression.
+      - name: No new warnings
+        run: |
+          if grep '^warning:' build.log \
+               | grep -v 'declaration uses .sorry.' > unexpected.log; then
+            echo "::error::unexpected warnings:"
+            cat unexpected.log
+            exit 1
+          fi
+          echo "no unexpected warnings"
+
+      # The trust policy: no forbidden tokens, exactly the deliberate holes,
+      # and both compared theorems on the three standard axioms only.
+      - name: Trust audit
+        run: bash scripts/audit.sh
