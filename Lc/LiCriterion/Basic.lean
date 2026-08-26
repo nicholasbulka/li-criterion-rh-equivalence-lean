@@ -8,8 +8,6 @@ Authors: Nicholas Bulka
 
   This file formalizes Li (1997), "The Positivity of a Sequence of Numbers and the Riemann
   Hypothesis".
-  See resources/original_Li_Criterion.sentences.txt (document-uuid
-  1cff88a1-26eb-456c-a9c8-91397ea15c12).
 
   ## File Organization
 
@@ -21,27 +19,27 @@ Authors: Nicholas Bulka
     - Functional equation consequences
     - General analysis facts
 
-    ⚠️ These ax_ioms represent facts Li ASSUMES from the literature. In <idea-7>,
+ ⚠️ These ax_ioms represent facts Li ASSUMES from the literature. For instance,
        Li writes "Write ξ(s) = ∏_ρ (1 - s/ρ)" without proof—this comes from
        Hadamard factorization + functional equation, which are external results.
 
   **PART II: LI'S PROOF** (following the paper structure exactly)
-    - <idea-1> to <idea-6>: Setup and statement of theorem
-    - <idea-7>: Product formula (ASSUMED, not proven in Li's paper)
-    - <idea-8> to <idea-10>: Key identity λ_n = ∑_ρ (1 - 1 / ρ)^n
-    - <idea-11> to <idea-15>: Coefficient positivity
-    - <idea-16> to <idea-18>: Forward direction (RH ⟹ λ_n ≥ 0)
-    - <idea-19> to <idea-21>: Reverse direction (λ_n ≥ 0 ⟹ RH)
+ - Setup and statement of theorem
+ - Product formula (ASSUMED, not proven in Li's paper)
+ - Key identity λ_n = ∑_ρ (1 - 1 / ρ)^n
+ - Coefficient positivity
+ - Forward direction (RH ⟹ λ_n ≥ 0)
+ - Reverse direction (λ_n ≥ 0 ⟹ RH)
 
   ## Key Implementation Notes
 
-  - <idea-16>: |1 - 1 / ρ| = 1 on critical line → `modulus_eq_one_of_re_half`
-  - <idea-9>, <idea-10>: Generating function → `logDeriv_phi_finite`,
-  `idea09_generating_function_on_finset`
-  - <idea-14>: Recurrence relation → `sum_const_mul`
-  - <idea-18>: Positivity via unit circle parametrization
+ - |1 - 1 / ρ| = 1 on critical line → `modulus_eq_one_of_re_half`
+ - Generating function → `logDeriv_phi_finite`,
+  `generating_function_on_finset`
+ - Recurrence relation → `sum_const_mul`
+ - Positivity via unit circle parametrization
 
-  Proof strategies from resources/advanced_help.txt: normalize variables, harvest
+ Proof strategies: normalize variables, harvest
   non-vanishing conditions, close algebra with `field_simp` + `ring`.
 -/
 
@@ -86,7 +84,7 @@ import Lc.LiCriterion.Pringsheim
 /-! ## Basic setup and the key geometric observation
 
 These geometric facts connect the critical line to the unit circle via the
-Möbius transform z ↦ 1 - 1/z. This is essential for <idea-16> in Li's proof.
+Möbius transform z ↦ 1 - 1/z. This is essential in Li's proof.
 -/
 
 open Complex Real Set Function Filter
@@ -121,11 +119,10 @@ lemma NontrivialZero.ne_one (ρ : NontrivialZero) : ρ.val ≠ 1 := by
 ████████████████████████████████████████████████████████████████████████████████
 -/
 
-/-! ### Geometry behind <idea-16>
+/-! ### Geometry behind the criterion
 The key geometric fact used throughout Li’s proof is that the Möbius transform
 z ↦ 1 − 1/z maps the critical line Re(z) = 1 / 2 to the unit circle. We encode
-this via exact norm-squared identities and their consequences. These connect
-directly to <idea-16> in original_Li_Criterion.sentences.txt.
+this via exact norm-squared identities and their consequences.
 -/
 
 /-- Uniform bound for a single Li-term on a smaller disk.
@@ -840,7 +837,6 @@ lemma logDeriv_phi_finite (S : Finset ℂ) (hS : 0 ∉ S) {z : ℂ} (hz : ‖z�
     exact hz_safe ρ hρ z_eq
   -- Step 4: Apply chain rule to φS = fS ∘ (λ w, 1/(1-w))
   have h_comp : φS = fS ∘ (fun w => 1/(1-w)) := rfl
-  -- Reference: originalPaper.sentences.txt <idea-65>
   -- "This transformation with kernel K(z, ξ) = ξ z / (ξ - 1) is known as Mellin transform."
   -- The transformation z ↦ 1/(1-z) is key to Li's approach
   -- Step 5: fS is differentiable at 1/(1-z)
@@ -873,7 +869,6 @@ lemma logDeriv_phi_finite (S : Finset ℂ) (hS : 0 ∉ S) {z : ℂ} (hz : ‖z�
       _ = (- ∑ ρ ∈ S, (1 / ρ) / (1 - (1/(1-z))/ρ)) * (1/(1-z)^2) := by
         rw [logDeriv_finite_prod S hS (1/(1-z)) h_safe]
       _ = ∑ ρ ∈ S, (1/(1-z) - 1/((1 - 1 / ρ) - z)) := by
-        -- Reference: original_Li_Criterion.sentences.txt, <idea-6> and <idea-8>.
         -- EXPANDED ALGEBRAIC PROOF STRATEGY:
         -- We need to show:
         --   -(1 / ρ) / (1 - (1 / (1 - z)) / ρ) * (1 / (1 - z)^2)
@@ -987,8 +982,7 @@ private lemma analyticAt_inv_linear (c : ℂ) (hc : c ≠ 0) :
 
 /-! ### Finite-sum algebra helpers -/
 
--- From original_Li_Criterion.sentences.txt
--- <idea-14> We freely use the algebraic identity
+-- We freely use the algebraic identity
 --   ∑ (1 - g x) = (S.card : ℂ) - ∑ g x
 -- and the constant-pull identity
 --   c * ∑ h x = ∑ c * h x
@@ -1015,9 +1009,8 @@ lemma taylorCoeff_finite_Li (S : Finset ℂ) (hS : 0 ∉ S) (n : ℕ)
     (deriv^[n] (logDeriv φS)) 0 / n.factorial =
       ∑ ρ ∈ S, (1 - (1 - 1 / ρ)^(-(n+1 : ℤ))) := by
   intro fS φS
-  -- Reference: resources/original_Li_Criterion.sentences.txt
-  -- <idea-9> Put φ(z) = ξ(1/(1-z)) = Σ_{n≥0} λ_n z^{n+1} for |z| < 1. (equation (1.4))
-  -- <idea-10> By (1.3), λ_n = Σ_ρ [1 - (1 - 1 / ρ)^{n+1}] expressed via zeros of ζ.
+ -- Put φ(z) = ξ(1/(1-z)) = Σ_{n≥0} λ_n z^{n+1} for |z| < 1. (equation (1.4))
+ -- By (1.3), λ_n = Σ_ρ [1 - (1 - 1 / ρ)^{n+1}] expressed via zeros of ζ.
   -- This is Li's key formula (1.4) from the 1997 paper
   -- Following Li's proof from the 1997 paper:
   -- Step 1: Use logDeriv_phi_finite to get φ'(z)/φ(z) = ∑ρ [1/(1-z) - 1/( (1-1 / ρ) - z )]
@@ -1057,15 +1050,14 @@ lemma taylorCoeff_finite_Li (S : Finset ℂ) (hS : 0 ∉ S) (n : ℕ)
   -- But Li writes it as: 1 - (1-1 / ρ)^{n+1}
   -- The apparent contradiction comes from different conventions in defining λₙ
   -- Li uses the convention where zeros inside |z| < 1 contribute positively
-  -- Reference: original_Li_Criterion.sentences.txt
-  -- <idea-11> "Let n (cid:31) .(z)=1+ : a zj. (1.5) We find that n (&amp;1)l&amp;1 * =n : : a }}}a"
-  -- <idea-14> This is the recurrence-relation step from the original paper.
+ -- "Let n (cid:31).(z)=1+: a zj. (1.5) We find that n (&amp;1)l&amp;1 * =n:: a }}}a"
+ -- This is the recurrence-relation step from the original paper.
   -- The complete proof requires:
   -- 1. Verifying convergence of the power series for φ'(z)/φ(z) near z = 0
   -- 2. Using Cauchy's formula for derivatives: f^(n)(0) = n! · [coefficient of z^n]
   -- 3. Carefully tracking the sign conventions through the transformations
   -- Step 7: Coefficient/derivative extraction at 0 (analytic on a neighborhood of 0)
-  -- <idea-8> Equality of the logarithmic derivative with the explicit finite sum
+ -- Equality of the logarithmic derivative with the explicit finite sum
   classical
   let H : ℂ → ℂ := fun z => logDeriv φS z
   let G : ℂ → ℂ := fun z => ∑ ρ ∈ S, (1 / (1 - z) - 1/((1 - 1 / ρ) - z))
@@ -1180,9 +1172,8 @@ lemma taylorCoeff_finite_Li (S : Finset ℂ) (hS : 0 ∉ S) (n : ℕ)
               ring
     exact this
   -- Sum and factor out n!
-  -- References to original_Li_Criterion.sentences.txt:
-  -- <idea-9> φ(z) = ∑_{n≥0} λₙ z^{n+1}, so λₙ is the zⁿ coefficient of φ′/φ.
-  -- <idea-10> λₙ = ∑_ρ [1 − (1 − 1 / ρ)^{n+1}] (Equation (1.4)); the calculation below
+ -- φ(z) = ∑_{n≥0} λₙ z^{n+1}, so λₙ is the zⁿ coefficient of φ′/φ.
+ -- λₙ = ∑_ρ [1 − (1 − 1 / ρ)^{n+1}] (Equation (1.4)); the calculation below
   --          turns `(deriv^[n] G) 0` into `n!` times a finite sum of `(1 − a_ρ)`
   --          with `a_ρ = (1 − 1 / ρ)^{−(n+1)}`.
   have hDG : (deriv^[n] G) 0
@@ -1205,8 +1196,8 @@ lemma taylorCoeff_finite_Li (S : Finset ℂ) (hS : 0 ∉ S) (n : ℕ)
   -- (Optional) reshape to `S.card - ∑ a_ρ` form if needed downstream.
   -- kept as a comment: trivial by `Finset.sum_sub_distrib` + `Finset.sum_const`.
   -- Relate derivatives of H and G at 0, then divide by n!
-  -- <idea-9> Using φ′/φ = G near 0 and coefficient-extraction via derivatives at 0.
-  -- <idea-10> After division by n!, the right side matches Li’s λₙ finite-sum formula.
+ -- Using φ′/φ = G near 0 and coefficient-extraction via derivatives at 0.
+ -- After division by n!, the right side matches Li’s λₙ finite-sum formula.
   have hMain : (deriv^[n] (logDeriv φS)) 0
       = (n.factorial : ℂ) * ∑ ρ ∈ S, (1 - (1 - 1 / ρ)^(-(n+1 : ℤ))) := by
     -- First, rewrite (deriv^[n] (logDeriv φS)) 0 as (deriv^[n] H) 0
@@ -1217,7 +1208,7 @@ lemma taylorCoeff_finite_Li (S : Finset ℂ) (hS : 0 ∉ S) (n : ℕ)
       _   = (deriv^[n] G) 0 := hDerivEq
       _   = (n.factorial : ℂ) * ∑ ρ ∈ S, (1 - (1 - 1 / ρ)^(-(n+1 : ℤ))) := hDG
   -- Divide both sides by n!
-  -- <idea-9>, <idea-10> This isolates the coefficient:
+ -- This isolates the coefficient:
   -- `(deriv^[n] (logDeriv φS)) 0 / n! = ∑ (1 − a_ρ)`.
   have hn0 : (n.factorial : ℂ) ≠ 0 := by exact_mod_cast (Nat.factorial_ne_zero n)
   have hdiv : (deriv^[n] (logDeriv φS)) 0 / (n.factorial : ℂ)
@@ -1460,32 +1451,28 @@ lemma xi_functional_equation (s : ℂ) : riemannXi s = riemannXi (1 - s) := by
 
 -- (Functional equation for ξ: ξ(s) = ξ(1 - s) can be added here; omitted to keep focus.)
 
-/-! ## Idea Markers (from `original_Li_Criterion.sentences.txt`)
-We keep the `<idea-N>` mapping as comments, but avoid placeholder lemmas of type `True`. -/
 
 /-
 ████████████████████████████████████████████████████████████████████████████████
 █                                                                              █
 █  PART II: LI'S PROOF (Following the original paper exactly)                 █
 █                                                                              █
-█  This section follows resources/original_Li_Criterion.sentences.txt         █
-█  with 1:1 correspondence to <idea-N> markers.                               █
 █                                                                              █
 ████████████████████████████████████████████████████████████████████████████████
 -/
 
-/-! ## <idea-1> to <idea-6>: Setup and Statement
+/-! ## Setup and Statement
 
-<idea-1> Title and Introduction
-<idea-2> Definition of λ_n = (1/(n-1)!) d^n/ds^n [s^(n-1) log ξ(s)]|_{s=1}
-<idea-3> Theorem 1 statement
-<idea-4> Main result: RH ⟺ λ_n ≥ 0 for all n
-<idea-5>, <idea-6> Definition of θ(x) = ∑ e^(-πn²x)
+Title and Introduction
+Definition of λ_n = (1/(n-1)!) d^n/ds^n [s^(n-1) log ξ(s)]|_{s=1}
+Theorem 1 statement
+Main result: RH ⟺ λ_n ≥ 0 for all n
+Definition of θ(x) = ∑ e^(-πn²x)
 -/
 
-/-! ## <idea-7>: Product Formula (ASSUMED in Li's paper)
+/-! ## Product Formula (ASSUMED in Li's paper)
 
-⚠️ Li's paper states in <idea-7>: "Write ξ(s) = ∏_ρ (1 - s/ρ)"
+⚠️ Li's paper states: "Write ξ(s) = ∏_ρ (1 - s/ρ)"
 
 This formula is NOT proven in Li's paper—it is assumed from the literature.
 It comes from:
@@ -1496,16 +1483,16 @@ It comes from:
 See PART I (Prerequisites) for the ax_ioms encoding these external results.
 -/
 
-/-! ## <idea-8> to <idea-10>: Key Identity
+/-! ## Key Identity
 
-<idea-8> Define φ(z) = ξ(1/(1-z)), then RH ⟺ φ'/φ analytic in unit disk
-<idea-9> Generating function: φ'/φ = ∑_{n=0}^∞ λ_{n+1} z^n
-<idea-10> Explicit formula: λ_n = ∑_ρ (1 - 1 / ρ)^n
+Define φ(z) = ξ(1/(1-z)), then RH ⟺ φ'/φ analytic in unit disk
+Generating function: φ'/φ = ∑_{n=0}^∞ λ_{n+1} z^n
+Explicit formula: λ_n = ∑_ρ (1 - 1 / ρ)^n
 
 This is the heart of Li's criterion.
 -/
 
-/-! ### A concrete form of <idea-9> and <idea-10> -/
+/-! ### A concrete form of the key identity -/
 
 /-- Finite products of analytic functions are analytic. -/
 lemma analyticAt_finset_prod {S : Finset ℂ} {f : ℂ → ℂ → ℂ} {z : ℂ}
@@ -1527,7 +1514,7 @@ lemma analyticAt_finset_prod {S : Finset ℂ} {f : ℂ → ℂ → ℂ} {z : ℂ
 
 /-! ## Hadamard Product Representation for ξ
 
-**Conway §XI.3** and **conway.extracted.sentences.txt**: Hadamard's Factorization Theorem
+**Conway §XI.3**: Hadamard's Factorization Theorem
 states that an entire function of finite order has a canonical product representation.
 For ξ (entire of order 1), this gives: ξ(s) = C · ∏ρ (1 - s/ρ)
 where ρ ranges over nontrivial zeros and C is a nonzero constant.
@@ -1542,7 +1529,7 @@ full Hadamard product machinery formalized. -/
 
 ⚠️ IMPORTANT: These ax_ioms are NOT proven in Li's paper!
 
-Li's paper ASSUMES in <idea-7>: "Write ξ(s) = ∏_ρ (1 - s/ρ)"
+Li's paper ASSUMES: "Write ξ(s) = ∏_ρ (1 - s/ρ)"
 This formula comes from:
   1. General Hadamard factorization (see Rh/HadamardFactorization.lean)
   2. Properties of ξ (order 1, genus 1)
@@ -1553,10 +1540,10 @@ These are deep results from complex analysis, external to Li's paper.
 
 References:
 - Rh/HadamardFactorization.lean: General Hadamard theorem
-- resources/hadamardFactorization.txt <idea-9>: Hadamard's Theorem
-- resources/ConreyRH.txt <idea-385>: Product formula for ξ
+- Hadamard's Theorem
+- Product formula for ξ
 - Titchmarsh, "The Theory of the Riemann Zeta-function"
-- resources/original_Li_Criterion.sentences.txt <idea-7>: Where Li uses this formula
+- Where Li uses this formula
 -/
 /-- **EXTERNAL AXIOM 1**: The zeros of riemannXi are exactly the nontrivial zeros of ζ.
 
@@ -3992,11 +3979,11 @@ lemma xi_nonzero_away_from_nontrivial_zeros (w : ℂ)
 -- Precise global log-derivative identity near z = 0 will follow from product/log-derivative
 -- expansion and uniform convergence; see the comment above.
 
--- <idea-10> precise: λₙ as a global sum over all nontrivial zeros
+-- precise: λₙ as a global sum over all nontrivial zeros
 /-! ### Weierstrass Theorem: Uniform convergence and Taylor coefficients -/
 
 -- **Weierstrass Theorem for Coefficients**
--- Conway §VII.2: Uniform limits of holomorphic functions (<idea-1660>, <idea-1661>)
+-- Conway §VII.2: Uniform limits of holomorphic functions
 -- If analytic functions f_k → f uniformly on a neighborhood of z, then
 -- the n-th derivatives converge pointwise: (deriv^[n] f_k)(z) → (deriv^[n] f)(z).
 --
@@ -4069,7 +4056,7 @@ lemma deriv_iterate_tendsto_of_uniform
     -- Divide both sides by (n+1)! to get the desired form
     exact h_ptwise.div_const ((n + 1).factorial : ℂ)
 
-/-! ### Global Li sum formula (<idea-10>) via uniform-convergence reduction -/
+/-! ### Global Li sum formula via uniform-convergence reduction -/
 
 /- Reduction theorem: passing finite identities to the limit under uniform
 convergence and summability. -/

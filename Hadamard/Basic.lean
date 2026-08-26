@@ -18,7 +18,6 @@ Authors: Nicholas Bulka
 
   **Proof Strategy**:
 
-  <idea-hadamard-13>
   Strategy of Proof.
   1. Prove this for entire function f(z) without zeros: by existence of logarithms
      we know f(z) = e^(g(z)). We show g(z) is a polynomial (This involves the so-called
@@ -28,13 +27,10 @@ Authors: Nicholas Bulka
      (a) Study the order of P(z) (this uses Jensen's Formula)
      (b) Get bounds on 1/P(z)
      (c) Conclude that f(z)/P(z) is entire of finite order as in the first case.
-  </idea-hadamard-13>
 
   **Main References**:
-  - hadamardFactorization.txt: Complete proof with all details (<idea-hadamard-1> through
-  <idea-hadamard-127>)
-  - conway.extracted.sentences.txt: Chapter XI Entire Functions (<idea-conway-5225> through
-  <idea-conway-5380>)
+ - Hadamard's factorization theorem, with all details
+ - Conway, Chapter XI: Entire Functions
 -/
 
 import Mathlib.Analysis.Complex.Basic
@@ -177,15 +173,11 @@ lemma re_lt_of_norm_exp_lt {w : ℂ} {t : ℝ}
 
 /-- **Definition 1.1**: The order of growth of an entire function
 
-<idea-hadamard-2>
 Definition: The infimum of ρ₀ such that |f(z)| < exp(|z|^ρ₀) for |z| ≥ R₀
-</idea-hadamard-2>
 
-<idea-hadamard-3>
 Lemma 1.2. Let f be an entire function of finite order.
   ρ(f) = lim sup_{r≥R→∞} (log log M(f,r)) / log(r)
 where M(f,r) = max_{|z|=r} |f(z)|
-</idea-hadamard-3>
 -/
 noncomputable def order (f : ℂ → ℂ) : ℝ :=
   Filter.limsup (fun r : ℝ =>
@@ -280,23 +272,17 @@ lemma maxModulus_subseq_bound_of_order (f : ℂ → ℂ) (ρ : ℝ) (ε : ℝ) (
 
 /-! ## Definitions
 
-<idea-hadamard-1>
 Definition 1.1. An entire function f is finite order if and only if ∃ρ₀, R₀ such that
   |f(z)| < exp(|z|^ρ₀) whenever |z| ≥ R₀.
 The infimum of such ρ₀ is called the order of f and is denoted by ρ = ρ(f).
-</idea-hadamard-1>
 
-<idea-conway-5254>
 Definition 2.1. Let f be an entire function with zeros {a₁, a₂,...}, repeated
 according to multiplicity and arranged such that |a₁| ≤ |a₂| ≤ ....
-</idea-conway-5254>
 
-<idea-conway-5256>
 Then f is of finite rank if there is an integer p such that
   ∑ |aₙ|^{-p-1} < ∞
 If p is the smallest integer such that this occurs, then f is said to be of rank p;
 a function with only a finite number of zeros has rank 0.
-</idea-conway-5256>
 
 The order of an entire function f is defined as:
     ρ(f) = lim sup_{r→∞} (log log M(f,r))/(log r)
@@ -319,7 +305,7 @@ lemma hasFiniteOrder_mul (f g : ℂ → ℂ) (hf : hasFiniteOrder f) (hg : hasFi
     use max ρf ρg + 1, max (max Rf Rg) 1 + 1
     intro z hz
     simp only [Pi.mul_apply, norm_mul]
-    -- Prove side conditions first (following advanced_help.txt)
+ -- Prove side conditions first
     -- We need Rf ≤ |z|, Rg ≤ |z|, 1 ≤ |z|, 2 ≤ |z|
     have hzf : Rf ≤ ‖z‖ := by
       have : Rf ≤ max (max Rf Rg) 1 + 1 := by
@@ -377,7 +363,7 @@ lemma hasFiniteOrder_mul (f g : ℂ → ℂ) (hf : hasFiniteOrder f) (hg : hasFi
       _ ≤ Real.exp (2 * ‖z‖ ^ max ρf ρg) := Real.exp_le_exp.mpr step2
       _ ≤ Real.exp (‖z‖ ^ (max ρf ρg + 1)) := Real.exp_le_exp.mpr step3
 
-/-- <idea-conway-5225>
+/--
 Weierstrass elementary factors:
   E₀(z) = 1 - z
   Eₚ(z) = (1-z) exp(z + z²/2 + ... + z^p/p) for p ≥ 1
@@ -385,13 +371,10 @@ Weierstrass elementary factors:
 The canonical product is:
   P(z) = ∏ₙ Eₚₙ(z/aₙ)
 where {pₙ} is chosen so that ∑ |aₙ|^{-pₙ-1} < ∞
-</idea-conway-5225>
 
-<idea-hadamard-9>
 Weierstrass elementary factors where:
   E_p(w) = (1-w)exp(w + w²/2 + ... + w^p/p)
 These appear in the canonical product representation.
-</idea-hadamard-9>
 -/
 noncomputable def weierstrass_E (p : ℕ) (w : ℂ) : ℂ :=
   (1 - w) * Complex.exp (∑ k ∈ Finset.range p, w^(k+1) / (k+1))
@@ -584,7 +567,6 @@ end CanonicalProduct
 
 /-- **Lemma 1.2**: Order formula using log log M(f,r)
 
-<idea-hadamard-3>
 Lemma 1.2. Let f be an entire function of finite order.
   ρ(f) = lim sup_{R→∞,r≥R} (loglogM(f,r))/log(r)
 where M(f,r) = max_{|z|=r} |f(z)|.
@@ -595,7 +577,6 @@ Proof. If f is finite order,
 ⟹ log log M(f,r) ≤ ρ₀ log(r)
 
 So we have lim_{R→∞} lim_{r≥R} (loglogM(f,r))/log r ≤ ρ₀.
-</idea-hadamard-3>
 -/
 lemma order_formula (f : ℂ → ℂ) (_hf : hasFiniteOrder f) :
   order f = Filter.limsup (fun r : ℝ =>
@@ -623,22 +604,16 @@ We import and open that namespace above, so all lemmas are available here.
 
 /- **Theorem 2.2** (Borel-Carathéodory): Relates Re g to |g|
 
-<idea-hadamard-17>
 Exercise 2.1. If f : D_R(0) → D_R(0) is a conformal map with f(0) = 0 then
   |f(z)| ≤ |z|. (Hint: consider g(z) = g(z/R)/R and apply Schwarz.)
 This replaces a hyperbolic geometry argument that McMullen uses.
-</idea-hadamard-17>
 
-<idea-hadamard-18>
 Theorem 2.2 (Borel-Carathéodory). Let f be holomorphic on a region containing D_R(0).
 For 0 < r < R,
   max_{|z|≤r} |f(z)| ≤ (2r)/(R-r) · max_{|z|=R} Re f(z) + |f(0)|
-</idea-hadamard-18>
 
-<idea-hadamard-19>
 Proof. We may assume f(0) = 0 by replacing f with f - f(0).
 Let M = max_{|z|=R} Re f(z). We want to show max_{|z|≤r} |f(z)| ≤ 2rM/(R-r).
-</idea-hadamard-19>
 
 
 
@@ -647,7 +622,6 @@ Let M = max_{|z|=R} Re f(z). We want to show max_{|z|≤r} |f(z)| ≤ 2rM/(R-r).
 
 **KEY REFERENCE**: Titchmarsh pages 56-57, Lemma α/β/γ
 **SCREENSHOT**:
-`/resources/pdfs/pngs/TitchMarshChapter-3-Hadamard/Screenshot 2025-10-07 at 3.18.23 PM.png`
 
 This inequality is essential for proving zero-free regions of ζ(s).
 
@@ -790,28 +764,20 @@ lemma cauchy_estimate_iteratedDeriv_at_zero
 
 /-- **Theorem 2.3**: If Re g(z) = O(r^ρ), then g is a polynomial of degree ≤ ρ
 
-<idea-hadamard-27>
 Theorem 2.3. Let g: ℂ → ℂ be entire. If for all ε > 0 there exists a sequence
 {rₙ} with rₙ → ∞ such that Re g(z) < r^{ρ+ε} whenever |z| = rₙ, then g(z) is
 a polynomial of degree ≤ ρ.
-</idea-hadamard-27>
 
-<idea-hadamard-30>
 Theorem 2.3 is equivalent to saying: if for all ε > 0 there exists some rₙ → ∞
 such that Re g(z) < rₙ^{ρ+ε} whenever |z| = rₙ, then g(z) is a polynomial of
 degree at most ρ. The sequence rₙ is necessary to avoid weird behavior at
 particular radii in applications.
-</idea-hadamard-30>
 
-<idea-hadamard-31>
 Proof. By the Borel-Carathéodory inequality, for 0 < r < R,
   max_{|z|≤r} |g(z)| ≤ (2r)/(R-r) · max_{|z|=R} Re g(z) + |g(0)|
-</idea-hadamard-31>
 
-<idea-hadamard-35>
 By Liouville's Theorem (the souped-up version) g(z) must be a polynomial
 of degree less than or equal to ρ.
-</idea-hadamard-35>
 -/
 lemma polynomial_from_growth (g : ℂ → ℂ) (ρ : ℝ) (hρ : 0 ≤ ρ)
     (h_entire : Differentiable ℂ g)
@@ -1137,35 +1103,25 @@ lemma polynomial_from_growth (g : ℂ → ℂ) (ρ : ℝ) (hρ : 0 ≤ ρ)
 
 /- **Theorem 3.1** (Jensen's Formula): Relates zeros to maximum modulus
 
-<idea-hadamard-36>
 Theorem 3.1 (Jensen's Formula). Let f be analytic in B(0;r) with zeros a₁,...,aₙ
 in B(0;r) (repeated by multiplicity). If f(0) ≠ 0 then
   log|f(0)| = -∑_{j=1}^n log(r/|aⱼ|) + (1 / 2π) ∫₀^{2π} log|f(re^{iθ})| dθ
-</idea-hadamard-36>
 
-<idea-conway-5242>
 Jensen's Formula 1.2. Let f be analytic on a region containing B(0;r) and
 suppose that a₁,...,aₙ are the zeros of f in B(0;r) repeated according to
 multiplicity. If f(0) ≠ 0 then
   log|f(0)| = -∑_{j=1}^n log(r/|aⱼ|) + (1 / 2π) ∫₀^{2π} log|f(re^{iθ})| dθ
-</idea-conway-5242>
 
-<idea-conway-5243>
 Proof. If |b| < 1 then the map (z-b)(1-b̄z)^{-1} takes the disk B(0;1) onto
 itself. Therefore (r²-āⱼz)/(r(z-aⱼ)) maps B(0;1) onto itself and takes the
 boundary to the boundary.
-</idea-conway-5243>
 
-<idea-conway-5244>
 Therefore F(z) = f(z)∏(r²-āⱼz)/(r(z-aⱼ)) is analytic in an open set containing
 B(0;r), has no zeros in B(0;r), and |F(z)| = |f(z)| for |z| = r.
-</idea-conway-5244>
 
-<idea-conway-5245>
 So (1.1) applies to F to give
   log|F(0)| = (1 / 2π) ∫₀^{2π} log|f(re^{iθ})| dθ.
 However F(0) = f(0)∏(-āⱼ/aⱼ)(r/aⱼ) so that Jensen's Formula results.
-</idea-conway-5245>
 -/
 /-- Circle average of an analytic function equals its center value.
 
@@ -1658,27 +1614,21 @@ lemma finite_sum_pow_bound (z : ℂ) (h : ℕ) (hz : ‖z‖ ≤ 1) :
 
 /-- **Lemma 4.11**: Bounds on elementary factors
 
-<idea-hadamard-111>
 Lemma 4.11.
 1. There exists some C such that log|E_h(z)| ≥ -C|z|^{h+1} when |z| ≤ 1 / 2.
 2. There exists some C such that log|E_h(z)| ≥ -C|z|^h when |z| ≥ 1 / 2.
-</idea-hadamard-111>
 
-<idea-hadamard-114>
 Proof. We follow [SS03].
 1. Suppose |z| ≤ 1 / 2. This implies log(1-z) = -∑_{j≥1} z^j/j. We have
    E_h(z) = exp[log(1-z) + ∑_{j=1}^h z^j/j] = exp[∑_{j≥h+1} z^j/j] = exp(w).
    Since e^w ≥ e^{-|w|} and |w| ≤ C|z|^{h+1} we have
    |E_h(z)| ≥ exp(-∑_{j≥h+1} |z|^j/j) ≥ e^{-C|z|^{h+1}}.
-</idea-hadamard-114>
 
-<idea-hadamard-118>
 2. Suppose |z| ≥ 1 / 2. We have
    |E_h(z)| = |1-z| · |e^{z+z²/2+...+z^h/h}|.
 The proof follows from
    |e^{z+z²/2+...+z^h/h}| ≥ e^{-|z+z²/2+...+z^h/h|} ≥ e^{-C|z|^h}
 for some C ≥ 0.
-</idea-hadamard-118>
 -/
 -/
 /- ### Elementary factor bounds (refactored)
@@ -2509,15 +2459,11 @@ lemma weierstrass_E_away_from_one_lower_bound (h : ℕ) (δ : ℝ) (hδ : 0 < δ
 
 /-- **Step 1**: Entire functions without zeros are exponentials of polynomials
 
-<idea-hadamard-14>
 Prove this for entire function f(z) without zeros: by existence of logarithms
 we know f(z) = e^{g(z)}.
-</idea-hadamard-14>
 
-<idea-hadamard-15>
 We show g(z) is a polynomial (This involves the so-called Borel-Carathéodory
 inequality).
-</idea-hadamard-15>
 
 Proof sketch:
 1. Since f has no zeros and is entire, we can write f = e^g for some entire g
@@ -2531,7 +2477,7 @@ theorem entire_no_zeros_is_exp_polynomial (f : ℂ → ℂ) (ρ : ℝ)
     (h_no_zeros : ∀ z : ℂ, f z ≠ 0) :
   ∃ g : Polynomial ℂ, (∀ z, f z = exp (g.eval z)) ∧ (g.natDegree : ℝ) ≤ ρ := by
   classical
-  -- Proof strategy (following idea-hadamard-14 and idea-hadamard-15):
+ -- Proof strategy:
   --
   -- Step 1: Since f has no zeros and is entire, construct g = log f
   -- Step 2: Show g is entire (continuous branch of logarithm exists)

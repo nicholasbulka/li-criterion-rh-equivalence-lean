@@ -1454,13 +1454,13 @@ theorem weighted_paired_sum_formula_of_mtest_and_cauchy
         logDeriv (fun w => (∏ ρ ∈ (T n).image (fun ρ => ρ.val), (1 - (1/(1-w))/ρ))) z)
         (logDeriv (fun z => riemannXi (1/(1 - z)))) atTop (Metric.ball 0 r) := by
     -- Step 1: Express log-derivative of product as sum (Hadamard product formula)
-    -- <idea-7> Write ξ(s) = ∏_ρ (1 - s/ρ) where product is over nontrivial zeros
+ -- Write ξ(s) = ∏_ρ (1 - s/ρ) where product is over nontrivial zeros
     --          with ρ and 1-ρ paired together
-    -- <idea-35> (Theorem 2 of Barner) Hadamard product formula for ξ_k(s)
-    -- <idea-319> (Titchmarsh) Hadamard's factorization theorem:
+ -- (Theorem 2 of Barner) Hadamard product formula for ξ_k(s)
+ -- (Titchmarsh) Hadamard's factorization theorem:
     --            ξ(s) = e^(a+bs) ∏_ρ (1 - s/ρ) e^(s/ρ)
-    -- <idea-57> From product formula (3.1): φ(z) = ∏_ρ (1 - (1-(1/ρ))z)/(1-z)
-    -- Titchmarsh Theorem 2.12 (idea-301 to idea-304): Zeros and factorization formulae
+ -- From product formula (3.1): φ(z) = ∏_ρ (1 - (1-(1/ρ))z)/(1-z)
+ -- Titchmarsh Theorem 2.12: Zeros and factorization formulae
     have h_xi_logderiv : ∀ z ∈ Metric.ball 0 r,
         logDeriv (fun w => riemannXi (1/(1 - w))) z =
         ∑' ρ : NontrivialZero, (1/(1-z) - 1/(1 - 1/ρ.val - z)) := by
@@ -1470,7 +1470,7 @@ theorem weighted_paired_sum_formula_of_mtest_and_cauchy
       -- Substituting s = 1/(1-w): ξ(1/(1-w)) = ξ(0) · ∏_ρ (1 - (1/(1-w))/ρ)
       -- Taking log-derivative gives the sum formula
       -- Use the Hadamard product formula for riemannXi (ax_iom at top of file)
-      -- **Conway §XI.3 Hadamard's Factorization Theorem** <idea-5349>
+ -- **Conway §XI.3 Hadamard's Factorization Theorem**
       -- The ax_iom encapsulates the deep theory from Conway's proof (lines 1253-1255)
       obtain ⟨C, hC_ne, h_formula⟩ := hadamard_product_xi
       have h_hadamard :
@@ -1512,7 +1512,7 @@ theorem weighted_paired_sum_formula_of_mtest_and_cauchy
             intro ρ
             exact h_single_term ρ z hz
     -- Step 2: Express log-derivative of finite product as finite sum
-    -- <idea-8> Log-derivative identity for finite products
+ -- Log-derivative identity for finite products
     -- This uses our already-proved lemma logDeriv_phi_finite (line 549)
     have h_finite_logderiv : ∀ n z, z ∈ Metric.ball 0 r →
         logDeriv (fun w => (∏ ρ ∈ (T n).image (fun ρ => ρ.val), (1 - (1/(1-w))/ρ))) z =
@@ -1623,7 +1623,7 @@ theorem weighted_paired_sum_formula_of_mtest_and_cauchy
               (1 / (1 - z) - 1 / (1 - 1 / ρ.val.val - z)) := by
               ring
     -- Step 4: Uniform bound on tail terms (M-test ingredient)
-    -- <idea-36> Convergence of product (3.1) is uniform on compact subsets
+ -- Convergence of product (3.1) is uniform on compact subsets
     -- Titchmarsh §2.13: Growth of zeros |ρ_n| ~ n/log(n) (Riemann-von Mangoldt)
     -- Each term is bounded by C/‖ρ‖ on the ball (uniform in z)
     have h_term_bound :
@@ -1658,7 +1658,7 @@ theorem weighted_paired_sum_formula_of_mtest_and_cauchy
           ≤ C / ‖ρ.val‖ := h_ineq
         _ = C * (1 / ‖ρ.val‖) := by ring
     -- Step 6: Tail tends to zero as n → ∞ (from cover and summability)
-    -- <idea-37>, <idea-38> Series (3.3) converges uniformly for |s| < ε
+ -- Series (3.3) converges uniformly for |s| < ε
     -- Weierstrass M-test: uniform convergence on compact sets
     have h_tail_vanishes : ∀ ε > 0, ∃ N, ∀ n ≥ N, ∀ z ∈ Metric.ball 0 r,
         ‖∑' ρ : {ρ : NontrivialZero // ρ ∉ T n},
@@ -1732,13 +1732,13 @@ theorem weighted_paired_sum_formula_of_standard_hypotheses
 
 -- (duplicate removed; reduction stated earlier)
 
-/-! ### Finite version of <idea-9>
+/-! ### Finite version of
 For a finite set of complex numbers `S` with `0 ∉ S` and `1 ∉ S`, define
 `f_S(s) = ∏_{ρ ∈ S} (1 - s/ρ)` and `φ_S(z) = f_S(1/(1-z))`. Then in a punctured
-neighborhood of `0` we have the log-derivative identity of <idea-9> with a
+neighborhood of `0` we have the log-derivative identity of with a
 finite sum on the right. -/
 
-lemma idea09_generating_function_on_finset
+lemma generating_function_on_finset
     (S : Finset ℂ) (hS0 : 0 ∉ S) (hS1 : ∀ ρ ∈ S, ρ ≠ (1 : ℂ)) :
     ∀ᶠ z in 𝓝 (0 : ℂ),
       let fS := fun s => ∏ ρ ∈ S, (1 - s/ρ)
@@ -1788,11 +1788,11 @@ lemma idea09_generating_function_on_finset
       intro ρ hρ; exact hz_safe ρ hρ)
   simpa using this
 
-/-! ### <idea-9> for a finite set of nontrivial zeros (simple projection form)
+/-! ### for a finite set of nontrivial zeros (simple projection form)
 Given a finite set `T` of nontrivial zeros, project to the corresponding set of
 complex points `S = T.image (·.val)` and apply the finite lemma above. -/
 
-lemma idea09_generating_function_on_finiteZeros
+lemma generating_function_on_finiteZeros
     (T : Finset NontrivialZero) :
     ∀ᶠ z in 𝓝 (0 : ℂ),
       let S : Finset ℂ := T.image (fun ρ => ρ.val)
@@ -1813,7 +1813,7 @@ lemma idea09_generating_function_on_finiteZeros
     rcases Finset.mem_image.mp hc with ⟨ρ, hρT, rfl⟩
     exact NontrivialZero.ne_one ρ
   -- Apply the finite lemma on S
-  have hfin := idea09_generating_function_on_finset S hS0 (by
+  have hfin := generating_function_on_finset S hS0 (by
     intro c hc; exact hS1 c hc)
   -- Repackage the statement in the local let-bindings
   filter_upwards [hfin] with z hz
@@ -1852,21 +1852,21 @@ lemma taylorCoeff_finite_on_finiteZeros
   have := taylorCoeff_finite_Li (S := S) hS0 n (by intro c hc; exact hS1 c hc)
   simpa [fS, φS]
 
-/-! ## <idea-11> to <idea-15>: Coefficient Positivity
+/-! ## Coefficient Positivity
 
-<idea-11> to <idea-13>: Proof that a_j > 0 (coefficients of φ(z) = ξ(1/(1-z)))
+Proof that a_j > 0 (coefficients of φ(z) = ξ(1/(1-z)))
   - Uses theta function expansion: θ(x) = ∑ e^(-πn²x)
   - Shows a_j are positive via integral representation
-<idea-14>: Recurrence relation: λ_n = n·a_n - ∑_{j=1}^{n-1} λ_j·a_{n-j}
-<idea-15>: λ_n are real numbers (from conjugate pairing and real-analyticity)
+Recurrence relation: λ_n = n·a_n - ∑_{j=1}^{n-1} λ_j·a_{n-j}
+λ_n are real numbers (from conjugate pairing and real-analyticity)
 -/
 
-/-! ## <idea-16> to <idea-18>: Forward Direction (RH ⟹ λ_n ≥ 0)
+/-! ## Forward Direction (RH ⟹ λ_n ≥ 0)
 
-<idea-16>: If Re(ρ) = 1/2, then |1 - 1/ρ| = 1
+If Re(ρ) = 1/2, then |1 - 1/ρ| = 1
   - Implemented by `norm_sq_eq_to_re_half` and `modulus_criterion`
-<idea-17>: Parametrize 1 - 1/ρ = e^(iθ_ρ)
-<idea-18>: λ_n = ∑_ρ (1 - 1/ρ)^n = ∑_ρ (1 - e^{i(n)θ_ρ})
+Parametrize 1 - 1/ρ = e^(iθ_ρ)
+λ_n = ∑_ρ (1 - 1/ρ)^n = ∑_ρ (1 - e^{i(n)θ_ρ})
          = ∑_ρ (1 - cos(nθ_ρ) - i·sin(nθ_ρ))
          Taking real part: Re(λ_n) = ∑_ρ (1 - cos(nθ_ρ)) ≥ 0
 
@@ -1875,7 +1875,7 @@ This proves: RH ⟹ λ_n ≥ 0 for all n.
 
 /-! ### Key geometric fact for forward direction -/
 
-/-- <idea-16>: On the critical line Re(ρ) = 1/2, we have |1 - 1/ρ| = 1.
+/-- On the critical line Re(ρ) = 1/2, we have |1 - 1/ρ| = 1.
 
     Proof: From ρ we form 1 - 1/ρ. We need to show ‖1 - 1/ρ‖ = 1.
     Equivalently (squaring): ‖1 - 1/ρ‖² = 1.
@@ -1908,7 +1908,7 @@ lemma modulus_one_minus_one_div_on_critical_line (ρ : ℂ) (hρ : ρ ≠ 0) :
   have h_pos_ne_neg : ‖1 - 1/ρ‖ ≠ -1 := ne_of_gt (by linarith : -1 < ‖1 - 1/ρ‖)
   exact sq_eq_one_iff.mp h_sq |>.resolve_right h_pos_ne_neg
 
-/-! ### <idea-17>: Unit circle parametrization -/
+/-! ### Unit circle parametrization -/
 
 /-- If w has modulus 1, we can write w = e^(iθ) for some real θ.
     This is the standard polar form for complex numbers on the unit circle. -/
@@ -1921,7 +1921,7 @@ lemma unit_circle_polar_form (w : ℂ) (hw : ‖w‖ = 1) :
   rw [hw] at h
   simpa using h.symm
 
-/-! ### <idea-18>: Positivity from cosine formula -/
+/-! ### Positivity from cosine formula -/
 
 /-- For w = e^(iθ) on the unit circle, we have:
     Re(w^n) = cos(nθ)
@@ -1948,19 +1948,19 @@ lemma one_minus_cos_nonneg (α : ℝ) : 0 ≤ 1 - Real.cos α := by
 
 /-! ### Main theorem: Forward direction -/
 
-/-- **Forward Direction (<idea-16> to <idea-18>)**: RH implies λ_n ≥ 0.
+/-- **Forward Direction**: RH implies λ_n ≥ 0.
 
     **Proof structure from Li's paper**:
 
     Assume all zeros satisfy Re(ρ) = 1/2 (Riemann Hypothesis).
 
-    Step 1 (<idea-16>): For each zero ρ with Re(ρ) = 1/2,
+ Step 1: For each zero ρ with Re(ρ) = 1/2,
       we have |1 - 1/ρ| = 1.
 
-    Step 2 (<idea-17>): Since |1 - 1/ρ| = 1, we can write:
+ Step 2: Since |1 - 1/ρ| = 1, we can write:
       1 - 1/ρ = e^(iθ_ρ) for some real θ_ρ.
 
-    Step 3 (<idea-18>): Then:
+ Step 3: Then:
       (1 - 1/ρ)^n = e^(inθ_ρ) = cos(nθ_ρ) + i·sin(nθ_ρ)
 
     Step 4: For a finite set of zeros, the coefficient involves:
@@ -1995,32 +1995,32 @@ theorem forward_direction_key_geometric_fact :
     rw [h_polar, real_part_of_unit_circle_power]
     exact one_minus_cos_nonneg (n * θ)
 
-/-! ## <idea-19> to <idea-21>: Reverse Direction (λ_n ≥ 0 ⟹ RH)
+/-! ## Reverse Direction (λ_n ≥ 0 ⟹ RH)
 
-<idea-19>: If λ_n ≥ 0 for all n, then:
+If λ_n ≥ 0 for all n, then:
   ∑ |λ_n z^{n-1}| ≤ ∑ λ_n |z|^{n-1} = φ'(|z|) < ∞
   for |z| < 1
-<idea-20>: Therefore φ'/φ is analytic in the unit disk
+Therefore φ'/φ is analytic in the unit disk
   (the series converges uniformly on compact subsets of |z| < 1)
-<idea-21>: By the change of variables z = 1 - 1/s, analyticity of φ'/φ
+By the change of variables z = 1 - 1/s, analyticity of φ'/φ
   in |z| < 1 corresponds to no zeros of ζ in Re(s) > 1/2.
   Combined with the functional equation, this gives RH.
 
 This completes the proof: λ_n ≥ 0 for all n ⟹ RH. ∎
 -/
 
--- <idea-19>, <idea-20>, <idea-21> (analyticity in the unit disk and conclusion)
+-- (analyticity in the unit disk and conclusion)
 --
 -- This analytic step is now formalized in `Lc/LiCriterion/ReverseDirection.lean` as
 -- `positivity_implies_RH`.
 
 /-! ## Equivalence from the Sum Formula
 We isolate the remaining analytic ingredient as an assumption: the global Li
-sum formula <idea-10>. Under this hypothesis, we derive Li’s equivalence
-<idea-4>. This moves the remaining work to proving the product/log-derivative
+sum formula. Under this hypothesis, we derive Li’s equivalence
+. This moves the remaining work to proving the product/log-derivative
 identity and the uniformity required to extract coefficients. -/
 
--- <idea-18> unit-circle cosine positivity, used termwise on 1 − a^(n+1)
+-- unit-circle cosine positivity, used termwise on 1 − a^(n+1)
 private lemma one_sub_zpow_unitCircle_nonneg (a : ℂ) (ha : ‖a‖ = 1) (n : ℕ) :
     0 ≤ (1 - a ^ (-(n+1 : ℤ))).re := by
   -- For any complex z, Re z ≤ ‖z‖. Hence (1 - z).re = 1 - Re z ≥ 1 - ‖z‖.
@@ -2047,7 +2047,7 @@ private lemma re_tsum_nonneg_of_nonneg_terms
   -- This follows from tsum_nonneg since all terms are non-negative
   exact tsum_nonneg hnn
 
--- <idea-16> specialized: on the critical line, |1 − 1/ρ| = 1
+-- specialized: on the critical line, |1 − 1/ρ| = 1
 private lemma unitCircle_of_re_half (ρ : NontrivialZero)
     (hRH : ρ.val.re = 1 / 2) : ‖1 - 1 / (ρ.val)‖ = 1 := by
   have hρ : (ρ.val) ≠ 0 := NontrivialZero.ne_zero ρ
@@ -2065,7 +2065,7 @@ private lemma unitCircle_of_re_half (ρ : NontrivialZero)
   have hgoal' : ‖1 - (ρ.val)⁻¹‖ = 1 := by simp [hcomb, hnorm_eq, h0]
   simpa [one_div] using hgoal'
 
--- <idea-4> from <idea-10> + <idea-16> + <idea-18>
+-- from + +
 theorem li_equiv_from_sum_formula
     (hgenus : Summable (fun (ρ : NontrivialZero) => (1 : ℝ) / ‖ρ.val‖ ^ 2))
     (Hsum : ∀ n : ℕ,
@@ -2171,7 +2171,7 @@ theorem li_equiv_from_weighted_sum_formula
   · intro hpos s hζ hstrip
     exact positivity_implies_RH hpos s hζ hstrip
 
-/-- **Reverse direction (<idea-19>–<idea-21>)**:
+/-- **Reverse direction**:
 positivity of the Li coefficients implies RH.
 
 This direction is unconditional:
