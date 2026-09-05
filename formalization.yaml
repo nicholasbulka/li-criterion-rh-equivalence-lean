@@ -1,143 +1,175 @@
-version: "0.3"
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+version: "v0.4"
 
 project:
   name: "Li's criterion for the Riemann Hypothesis"
+  description: >-
+    Li's criterion for the Riemann zeta function, formalized in Lean 4 over Mathlib:
+    Mathlib's `RiemannHypothesis` holds if and only if every Li-Keiper coefficient of the
+    completed xi function has nonnegative real part. The zero-indexed analytic coefficient
+    at n is Li's classical lambda_(n+1), the n-th Taylor coefficient at 0 of the logarithmic
+    derivative of s |-> xi(1/(1-s)). A second compared theorem identifies this analytic
+    coefficient with Li's arithmetic coefficient, the symmetrized sum over the nontrivial
+    zeros counted with multiplicity. Both results are unconditional: the biconditional,
+    the coefficient identification, the genus-1 Hadamard factorization of xi (with
+    multiplicity), genus-1 summability of 1/|rho|^2, and the growth bound order(xi) <= 1
+    are all proved. This is a formalization of a classically known equivalence
+    (X.-J. Li, 1997); it is not a proof of the Riemann Hypothesis, nor of the positivity
+    of the coefficients.
   authors:
-    - name: "Nicholas Bulka"
-  license: "Apache-2.0"
+    - "Nicholas Bulka"
   responsible_maintainers:
-    - name: "Nicholas Bulka"
+    - "Nicholas Bulka"
+  license: "Apache-2.0"
 
 repository:
   role: substantive-development
+
+# Mathematical sources. This is a source-based formalization of a classically known result.
+sources:
+  - title: "The positivity of a sequence of numbers and the Riemann hypothesis"
+    authors: ["Xian-Jin Li"]
+    type: "paper"
+    id: "J. Number Theory 65 (1997), 325-333; doi:10.1006/jnth.1997.2137"
+    relationship: formalizes
+    note: >-
+      The criterion being formalized: the Riemann Hypothesis is equivalent to the
+      nonnegativity of the sequence (lambda_n). The Challenge statement is this
+      equivalence, with classical lambda_(n+1) realized as the n-th Taylor coefficient of
+      the logarithmic derivative of xi under the Cayley map z |-> 1/(1-z).
+
+  - title: "Complements to Li's criterion for the Riemann hypothesis"
+    authors: ["Enrico Bombieri", "Jeffrey C. Lagarias"]
+    type: "paper"
+    id: "J. Number Theory 77 (1999), 274-287; doi:10.1006/jnth.1999.2392"
+    relationship: background
+    note: >-
+      The arithmetic (sum-over-zeros) form of the coefficients and the standard account of
+      the equivalence used to fix the statement of record.
+
+  - title: "Power series expansions of Riemann's xi function"
+    authors: ["Jerry B. Keiper"]
+    type: "paper"
+    id: "Math. Comp. 58 (1992), 765-773; doi:10.2307/2153215"
+    relationship: background
+    note: >-
+      The Keiper coefficients, of which the Li coefficients are the Cayley-map realization
+      used here.
+
+  - title: "Lectures on Probability Theory - Li Criterion"
+    authors: ["M. Ram Murty"]
+    type: "other"
+    id: "https://www.youtube.com/watch?v=M0lgrrskxMw"
+    relationship: background
+    note: >-
+      An explanatory lecture on Li's criterion that helped guide the maintainer's
+      understanding of the mathematics and its presentation.
+
+  - title: "Mathlib (completed Riemann zeta and RiemannHypothesis)"
+    authors: ["The mathlib community"]
+    type: "other"
+    id: "https://github.com/leanprover-community/mathlib4"
+    relationship: background
+    note: >-
+      Software dependency, not a mathematical source. The RH side of the biconditional is
+      Mathlib's `RiemannHypothesis`; the xi function is built from Mathlib's
+      `completedRiemannZeta0`. `rh_equiv_mathlib` bridges Mathlib's predicate to the
+      critical-strip form used internally.
+
+related_formalizations: []
 
 classification:
   arxiv: [math.NT]
   msc2020: ["11M26", "11M06", "30D15"]
 
-status: complete
-fidelity: faithful
-scope: >-
-  Li's criterion for the Riemann zeta function: mathlib's `RiemannHypothesis`
-  holds if and only if every Li-Keiper coefficient of the completed xi has
-  nonnegative real part, where the zero-indexed analytic coefficient at n is
-  Li's classical lambda_(n+1): the n-th Taylor coefficient at 0 of the
-  logarithmic derivative of s |-> xi(1/(1-s)). The
-  second compared theorem identifies this analytic coefficient with Li's
-  arithmetic coefficient, expressed as the symmetrized sum over nontrivial
-  zeros with multiplicity. The results are unconditional: the biconditional,
-  coefficient identification, genus-1 Hadamard factorization of xi (with
-  multiplicity), genus-1 summability, and growth bound giving order(xi) <= 1
-  are all proved.
+status:
+  scope: >-
+    Complete. Li's criterion for the Riemann zeta function as an unconditional
+    biconditional against Mathlib's `RiemannHypothesis`, plus the identification of the
+    analytic Taylor coefficients with Li's arithmetic coefficients (symmetrized sum over
+    nontrivial zeros with multiplicity). The supporting theory - genus-1 Hadamard
+    factorization of xi with multiplicity, genus-1 summability, and the order bound
+    order(xi) <= 1 - is proved in the development, not assumed. The order bound is proved
+    in Lc/LiCriterion/XiGrowth.lean from the Mellin representation of
+    completedRiemannZeta0 and the exponential decay of the theta kernel, so no polynomial
+    bound for zeta in the critical strip is needed.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: [propext, Classical.choice, Quot.sound]
+  main_results:
+    - declaration: "li_criterion"
+      file: "comparator/Solution.lean"
+      sorry_count: 0
+      axioms: [propext, Classical.choice, Quot.sound]
+      comparator_config: "comparator.json"
+      literature_dependencies: []
+    - declaration: "li_coefficients_eq_zero_sum"
+      file: "comparator/Solution.lean"
+      sorry_count: 0
+      axioms: [propext, Classical.choice, Quot.sound]
+      comparator_config: "comparator.json"
+      literature_dependencies: []
 
-# ---------------------------------------------------------------------------
-# Mathematical sources.
-#
-# This is a source-based formalization of a classically known result.
-# ---------------------------------------------------------------------------
-sources:
-  - title: "The positivity of a sequence of numbers and the Riemann hypothesis"
-    authors: ["Xian-Jin Li"]
-    type: "paper"
-    identifier: "J. Number Theory 65 (1997), 325-333; doi:10.1006/jnth.1997.2137"
-    relationship: formalizes
-    note: >-
-      The criterion being formalized: the Riemann Hypothesis is equivalent to
-      the nonnegativity of the sequence (lambda_n). The Challenge statement is
-      this equivalence, with classical lambda_(n+1) realized as the n-th Taylor
-      coefficient of the logarithmic derivative of xi under the Cayley map
-      z |-> 1/(1-z).
-
-  - title: "Complements to Li's criterion for the Riemann hypothesis"
-    authors: ["Enrico Bombieri", "Jeffrey C. Lagarias"]
-    type: "paper"
-    identifier: "J. Number Theory 77 (1999), 274-287; doi:10.1006/jnth.1999.2392"
-    relationship: background
-    note: >-
-      The arithmetic (sum-over-zeros) form of the coefficients and the standard
-      account of the equivalence used to fix the statement of record.
-
-  - title: "Power series expansions of Riemann's xi function"
-    authors: ["Jerry B. Keiper"]
-    type: "paper"
-    identifier: "Math. Comp. 58 (1992), 765-773; doi:10.2307/2153215"
-    relationship: background
-    note: >-
-      The Keiper coefficients, of which the Li coefficients are the Cayley-map
-      realization used here.
-
-  - title: "Lectures on Probability Theory - Li Criterion"
-    authors: ["M. Ram Murty"]
-    type: "other"
-    identifier: "https://www.youtube.com/watch?v=M0lgrrskxMw"
-    relationship: background
-    note: >-
-      An explanatory lecture on Li's criterion that helped guide the
-      maintainer's understanding of the mathematics and its presentation.
-
-  - title: "Mathlib (completed Riemann zeta and RiemannHypothesis)"
-    authors: ["The mathlib community"]
-    type: "software"
-    identifier: "https://github.com/leanprover-community/mathlib4"
-    relationship: uses
-    note: >-
-      The RH side of the biconditional is mathlib's `RiemannHypothesis`; the xi
-      function is built from mathlib's `completedRiemannZeta0`. `rh_equiv_mathlib`
-      bridges mathlib's predicate to the critical-strip form used internally.
-
-related_formalizations: []
-
-# ---------------------------------------------------------------------------
-# How this was produced.
-# ---------------------------------------------------------------------------
 automation:
   methods:
-    - method: "ai-agent"
-      model: "Claude (Anthropic), in Claude Code"
-      role: >-
-        Wrote essentially all of the Lean source in the LiCriterion development,
-        working interactively under the direction and review of the maintainer:
-        choosing the Lean formulations, finding and repairing proofs, and
-        building the Hadamard-factorization and Li-criterion machinery. The
-        maintainer set the targets and reviewed the output.
+    - method: agent
+      models: ["Claude (Anthropic)"]
+      framework: "Claude Code"
+      notes: >-
+        Wrote essentially all of the Lean source in the LiCriterion development, working
+        interactively under the direction and review of the maintainer: choosing the Lean
+        formulations, finding and repairing proofs, and building the
+        Hadamard-factorization and Li-criterion machinery. The maintainer set the targets
+        and reviewed the output.
+  notes: >-
+    Interactive agent-assisted development directed and reviewed by the maintainer.
+
+fidelity:
+  divergences: >-
+    The compared statements are faithful to Li (1997) and Bombieri-Lagarias (1999) with the
+    following choices of formulation. Li's lambda_n is indexed classically from 1; the
+    formal `taylorCoeff riemannXi n` is zero-indexed, so it is lambda_(n+1). The
+    arithmetic coefficient is stated as the symmetrized sum over nontrivial zeros counted
+    with multiplicity, which is the classical symmetric summation convention; the
+    corresponding unpaired family is not absolutely summable. `Challenge.lean` states the
+    results with deliberate `sorry` holes, as the Comparator convention requires, and
+    `Solution.lean` supplies the proofs by delegating to the library. The Challenge
+    definitions (`riemannXi`, `phi`, `logDeriv`, `taylorCoeff`, `NontrivialZero`) are
+    built directly from Mathlib and mirrored character-for-character in
+    `ChallengeDeps.lean`. No additional hypotheses are assumed; the compared theorems
+    depend on propext, Classical.choice and Quot.sound only.
 
 review:
   status: self-assessed
-  reviewers:
-    - name: "Nicholas Bulka"
+  reviewers: ["Nicholas Bulka"]
   notes: >-
-    The maintainer directed and reviewed the development as it was produced. No
-    external or independent review has been performed. Every step is checked by
-    Lean; the comparator re-checks the statement equality, the axiom allowlist,
-    and the kernel replay.
+    The maintainer directed and reviewed the development as it was produced. No external
+    or independent review has been performed. Every step is checked by Lean; the
+    comparator re-checks the statement equality, the axiom allowlist, and the kernel
+    replay.
 
-# ---------------------------------------------------------------------------
-# Limitations and remaining gaps, stated so a reader can calibrate the claim.
-#
-# SUBMISSION GATE: cleared. The two declarations named in `comparator.json`,
-# `li_criterion` and `li_coefficients_eq_zero_sum`, both report exactly
-# propext, Classical.choice, Quot.sound.
-# ---------------------------------------------------------------------------
-known_gaps: []
+alignment:
+  namespace: "LiCriterion"
+  statements:
+    - source: "Li (1997), Theorem 1: RH iff lambda_n >= 0 for all n >= 1"
+      lean: "li_criterion"
+      module: "comparator/Solution.lean (proof: LiCriterion.li_criterion_rh_iff, Lc/LiCriterion/XiOrderBridge.lean)"
+      status: proved
+      note: "Stated against Mathlib's RiemannHypothesis; lambda_(n+1) as taylorCoeff riemannXi n."
+    - source: "Bombieri-Lagarias (1999), arithmetic form lambda_n = sum over rho of (1 - (1 - 1/rho)^n)"
+      lean: "li_coefficients_eq_zero_sum"
+      module: "comparator/Solution.lean (proof: LiCriterion.taylorCoeff_eq_li_symmetrized)"
+      status: proved
+      note: "Symmetrized sum over nontrivial zeros with multiplicity."
+    - source: "Hadamard factorization of xi, genus 1 (Titchmarsh; Conway Ch. XI)"
+      lean: "Hadamard.* and Lc/LiCriterion/GenusOnePairedSumFormula.lean"
+      module: "Hadamard/, Lc/LiCriterion/"
+      status: proved
+    - source: "order(xi) <= 1"
+      lean: "LiCriterion.xi_order_le_one, LiCriterion.xi_hasFiniteOrder"
+      module: "Lc/LiCriterion/XiGrowth.lean"
+      status: proved
 
-limitations:
-  - >-
-    Classically known result (Li 1997). The first formal statement is the
-    equivalence RH <-> Li positivity; it is not a proof of the Riemann
-    Hypothesis, nor of the positivity of the coefficients. The second formal
-    statement identifies the Taylor coefficients with the symmetrically summed
-    arithmetic coefficients over the nontrivial zeros.
-  - >-
-    The genus-1 Hadamard factorization of xi (with multiplicity) and the
-    genus-1 summability of 1/||rho||^2, and the growth bound order(xi) <= 1 are
-    all PROVED in the development and folded into the biconditional; none of
-    them is an assumption. The order bound is proved in
-    Lc/LiCriterion/XiGrowth.lean from the Mellin representation of
-    completedRiemannZeta0 and the exponential decay of the theta kernel, so no
-    polynomial bound for zeta in the critical strip is needed.
-  - >-
-    The compared theorems `li_criterion` and
-    `li_coefficients_eq_zero_sum` depend on propext, Classical.choice and
-    Quot.sound only. `Challenge.lean` states the results but does not prove
-    them; that is the comparator convention, and `Solution.lean` supplies the
-    proofs by delegating to the library.
+acknowledgements: >-
+  Mathlib (completedRiemannZeta0, RiemannHypothesis). Layout follows the Palomar comparator
+  convention of teorth/sendov and anthropics/zeta-23-lean.
