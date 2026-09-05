@@ -10,7 +10,8 @@ project:
     at n is Li's classical lambda_(n+1), the n-th Taylor coefficient at 0 of the logarithmic
     derivative of s |-> xi(1/(1-s)). A second compared theorem identifies this analytic
     coefficient with Li's arithmetic coefficient, the symmetrized sum over the nontrivial
-    zeros counted with multiplicity. Both results are unconditional: the biconditional,
+    zeros counted with multiplicity, and proves that symmetrized family summable so the sum
+    is the genuine one. Both results are unconditional: the biconditional,
     the coefficient identification, the genus-1 Hadamard factorization of xi (with
     multiplicity), genus-1 summability of 1/|rho|^2, and the growth bound order(xi) <= 1
     are all proved. This is a formalization of a classically known equivalence
@@ -42,10 +43,14 @@ sources:
     authors: ["Enrico Bombieri", "Jeffrey C. Lagarias"]
     type: "paper"
     id: "J. Number Theory 77 (1999), 274-287; doi:10.1006/jnth.1999.2392"
-    relationship: background
+    relationship: adapts
     note: >-
-      The arithmetic (sum-over-zeros) form of the coefficients and the standard account of
-      the equivalence used to fix the statement of record.
+      The second compared theorem, `li_coefficients_eq_zero_sum`, is the arithmetic
+      (sum-over-zeros) form of the coefficients from this paper, adapted as follows: the sum
+      is taken in the symmetric sense that pairs rho with 1 - rho, multiplicity is Mathlib's
+      `analyticOrderNatAt`, and the theorem also proves the symmetrized family is summable.
+      The paper's account of the equivalence also fixed the statement of record for the
+      first theorem.
 
   - title: "Power series expansions of Riemann's xi function"
     authors: ["Jerry B. Keiper"]
@@ -131,7 +136,9 @@ fidelity:
     formal `taylorCoeff riemannXi n` is zero-indexed, so it is lambda_(n+1). The
     arithmetic coefficient is stated as the symmetrized sum over nontrivial zeros counted
     with multiplicity, which is the classical symmetric summation convention; the
-    corresponding unpaired family is not absolutely summable. `Challenge.lean` states the
+    corresponding unpaired family is not absolutely summable. The second compared theorem
+    is a conjunction: `Summable` of the symmetrized weighted family, and the equality of
+    the Taylor coefficient with half its `tsum`, so the sum cannot be Lean's default value. `Challenge.lean` states the
     results with deliberate `sorry` holes, as the Comparator convention requires, and
     `Solution.lean` supplies the proofs by delegating to the library. The Challenge
     definitions (`riemannXi`, `phi`, `logDeriv`, `taylorCoeff`, `NontrivialZero`) are
@@ -158,9 +165,9 @@ alignment:
       note: "Stated against Mathlib's RiemannHypothesis; lambda_(n+1) as taylorCoeff riemannXi n."
     - source: "Bombieri-Lagarias (1999), arithmetic form lambda_n = sum over rho of (1 - (1 - 1/rho)^n)"
       lean: "li_coefficients_eq_zero_sum"
-      module: "comparator/Solution.lean (proof: LiCriterion.taylorCoeff_eq_li_symmetrized)"
+      module: "comparator/Solution.lean (proof: LiCriterion.summable_li_symmetrized and LiCriterion.taylorCoeff_eq_li_symmetrized, Lc/LiCriterion/Fidelity.lean)"
       status: proved
-      note: "Symmetrized sum over nontrivial zeros with multiplicity."
+      note: "Summability of the symmetrized family, and the symmetrized sum over nontrivial zeros with multiplicity."
     - source: "Hadamard factorization of xi, genus 1 (Titchmarsh; Conway Ch. XI)"
       lean: "Hadamard.* and Lc/LiCriterion/GenusOnePairedSumFormula.lean"
       module: "Hadamard/, Lc/LiCriterion/"

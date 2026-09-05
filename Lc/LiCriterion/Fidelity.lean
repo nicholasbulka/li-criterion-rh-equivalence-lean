@@ -132,4 +132,18 @@ theorem taylorCoeff_eq_li_symmetrized (n : ℕ) :
   refine tsum_congr fun ρ => ?_
   rw [liPairedSummand_eq]
 
+/-- **The symmetrized zero sum converges.**  The weighted paired family summed in
+`taylorCoeff_eq_li_symmetrized` is summable, so the `∑'` there denotes the genuine symmetric
+sum over the zeros and not Lean's default value for a non-summable family.  Unconditional: the
+genus-1 weighted summability comes from `order ξ ≤ 1`. -/
+theorem summable_li_symmetrized (n : ℕ) :
+    Summable (fun ρ : NontrivialZero =>
+      (analyticOrderNatAt riemannXi ρ.val : ℂ) *
+        ((1 - (1 - 1 / ρ.val) ^ (-((n : ℤ) + 1)))
+          + (1 - (1 - 1 / ρ.val) ^ ((n : ℤ) + 1)))) := by
+  refine (summable_weighted_Li_paired_summand_of_weighted_genus
+    (xi_weighted_genus_one_of_hadamard_order_one xi_hasFiniteOrder xi_order_le_one) n).congr
+    fun ρ => ?_
+  rw [liPairedSummand_eq]
+
 end LiCriterion

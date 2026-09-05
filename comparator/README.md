@@ -21,7 +21,10 @@ classical `λ_{n+1}` — the `n`-th Taylor coefficient at `0` of the logarithmic
 The second, `li_coefficients_eq_zero_sum`, verifies that the analytic Taylor coefficients in the
 first theorem are Li's arithmetic coefficients: the symmetrized sum over the nontrivial zeros,
 counted with multiplicity. The pairing records the classical symmetric summation convention;
-the corresponding unpaired family is not absolutely summable.
+the corresponding unpaired family is not absolutely summable. The theorem is a conjunction: the
+symmetrized, multiplicity-weighted family is `Summable` (so the `∑'` denotes the genuine symmetric
+sum and not Lean's default value for a non-summable family), and the Taylor coefficient equals half
+that sum.
 
 ## The files
 

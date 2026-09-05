@@ -16,7 +16,7 @@ byte-identical, PROVED by delegating to the LiCriterion library.
       (Lc/LiCriterion/XiOrderBridge.lean)
 
   li_coefficients_eq_zero_sum
-    → LiCriterion.taylorCoeff_eq_li_symmetrized
+    → LiCriterion.summable_li_symmetrized ∧ LiCriterion.taylorCoeff_eq_li_symmetrized
       (Lc/LiCriterion/Fidelity.lean)
 
 The challenge definitions in `ChallengeDeps.lean` (`riemannXi`, `taylorCoeff`, and the helpers
@@ -41,11 +41,16 @@ theorem li_criterion :
     RiemannHypothesis ↔ (∀ n : ℕ, 0 ≤ (taylorCoeff riemannXi n).re) :=
   LiCriterion.li_criterion_rh_iff
 
-/-- **Fidelity**, proved in `LiCriterion.taylorCoeff_eq_li_symmetrized`. -/
+/-- **Fidelity**: summability from `LiCriterion.summable_li_symmetrized`, the identity from
+`LiCriterion.taylorCoeff_eq_li_symmetrized`. -/
 theorem li_coefficients_eq_zero_sum (n : ℕ) :
+    Summable (fun ρ : NontrivialZero =>
+        (analyticOrderNatAt riemannXi ρ.val : ℂ) *
+          ((1 - (1 - 1 / ρ.val) ^ (-((n : ℤ) + 1)))
+            + (1 - (1 - 1 / ρ.val) ^ ((n : ℤ) + 1)))) ∧
     taylorCoeff riemannXi n
       = (2⁻¹ : ℂ) * ∑' ρ : NontrivialZero,
           (analyticOrderNatAt riemannXi ρ.val : ℂ) *
             ((1 - (1 - 1 / ρ.val) ^ (-((n : ℤ) + 1)))
               + (1 - (1 - 1 / ρ.val) ^ ((n : ℤ) + 1))) :=
-  LiCriterion.taylorCoeff_eq_li_symmetrized n
+  ⟨LiCriterion.summable_li_symmetrized n, LiCriterion.taylorCoeff_eq_li_symmetrized n⟩

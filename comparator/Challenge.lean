@@ -12,7 +12,8 @@ Challenge.lean — the TRUSTED comparator challenge module: WHAT IS CLAIMED.
 Two theorem statements, each with proof `sorry`. The first is Li's criterion for the Riemann zeta
 function: Mathlib's `RiemannHypothesis` holds if and only if every Li–Keiper coefficient of ξ has
 nonnegative real part. The second identifies those analytically defined Taylor coefficients with
-Li's symmetrically summed arithmetic formula over the nontrivial zeros. Every notion they use is
+Li's symmetrically summed arithmetic formula over the nontrivial zeros, and establishes that the
+symmetrized family is summable so the `∑'` is the genuine sum. Every notion they use is
 either Mathlib's (`RiemannHypothesis`, `analyticOrderNatAt`) or defined directly below from
 Mathlib alone (`riemannXi`, `taylorCoeff`, `NontrivialZero`).
 
@@ -80,8 +81,16 @@ zeros, counted with multiplicity, of `1 - (1 - 1/ρ)^{n+1}`, taken in the symmet
 pairs `ρ` with `1 - ρ`.
 
 The symmetrisation is not a weakening: the unpaired sum is not absolutely convergent, so a bare
-`∑'` over the zeros would be false rather than stronger. -/
+`∑'` over the zeros would be false rather than stronger.
+
+The statement is a conjunction.  Its first half says the symmetrized, multiplicity-weighted
+family is `Summable`, so that the `∑'` in the second half denotes the genuine symmetric sum over
+the zeros and not Lean's default value `0` for a non-summable family. -/
 theorem li_coefficients_eq_zero_sum (n : ℕ) :
+    Summable (fun ρ : NontrivialZero =>
+        (analyticOrderNatAt riemannXi ρ.val : ℂ) *
+          ((1 - (1 - 1 / ρ.val) ^ (-((n : ℤ) + 1)))
+            + (1 - (1 - 1 / ρ.val) ^ ((n : ℤ) + 1)))) ∧
     taylorCoeff riemannXi n
       = (2⁻¹ : ℂ) * ∑' ρ : NontrivialZero,
           (analyticOrderNatAt riemannXi ρ.val : ℂ) *
